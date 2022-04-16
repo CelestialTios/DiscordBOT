@@ -1,16 +1,9 @@
-﻿using System;
-using System.Configuration;
-using System.IO;
-using System.Net;
+﻿using System.Configuration;
 using System.Threading.Tasks;
-using DSharpPlus.Net;
-using DSharpPlus.Interactivity;
 using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus;
-using DSharpPlus.Entities;
 using TestRequest.Modules;
-using System.Configuration;
+using DSharpPlus.EventArgs;
 
 namespace TestRequest
 {
@@ -32,10 +25,36 @@ namespace TestRequest
             {
                 StringPrefixes = new[] { "!" }
             });
+
             commands.RegisterCommands<ModuleCalendar>();
 
             await discord.ConnectAsync();
             await Task.Delay(-1);
         }
+
+        /*private static Task CommandHandler(DiscordClient client, MessageCreateEventArgs e)
+        {
+            if (client.CurrentUser.IsBot) return Task.CompletedTask;
+            var cnext = client.GetCommandsNext();
+            var msg = e.Message;
+
+            var cmdStart = msg.GetStringPrefixLength("!");
+            if (cmdStart == -1) return Task.CompletedTask;
+
+            var prefix = msg.Content.Substring(0, cmdStart);
+            var cmdString = msg.Content.Substring(cmdStart);
+
+            var command = cnext.FindCommand(cmdString, out var args);
+            if (command == null)
+            {
+                client.SendMessageAsync(e.Channel,"No command found");
+                return Task.CompletedTask;
+            }
+
+            var ctx = cnext.CreateContext(msg, prefix, command, args);
+            Task.Run(async () => await cnext.ExecuteCommandAsync(ctx));
+
+            return Task.CompletedTask;
+        }*/
     }
 }

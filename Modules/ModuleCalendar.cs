@@ -1,14 +1,10 @@
-﻿using DSharpPlus;
-using DSharpPlus.Net;
-using DSharpPlus.Entities;
-using DSharpPlus.Interactivity;
+﻿using DSharpPlus.Entities;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using Ical.Net.CalendarComponents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TestRequest.Schedule;
 
@@ -46,7 +42,7 @@ namespace TestRequest.Modules
         //SECONDARY COMMAND
 
         [Command("setUrl")]
-        public async Task SetUrlCommand(CommandContext ctx, string url)
+        public async Task SetUrlCommand(CommandContext ctx, [RemainingText]string url)
         {
             await ctx.RespondAsync("Updating url...");
             Schedule.SetUrl(url);
