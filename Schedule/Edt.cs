@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,9 +14,8 @@ namespace TestRequest.Schedule
 {
     public class Edt
     {
-        private string url = "https://hyperplanning.univ-paris13.fr/hp2021/Telechargements/ical/Edt_LP_MNW_pa_Develop_web_mobil_AP_.ics?version=2021.0.1.6&idICal=5EC9958FB7B1DBDCBB08D11433CF5DFB&param=643d5b312e2e36325d2666683d3126663d3131303030";
-        
         public Calendar _Calendar;
+        string url = ConfigurationManager.AppSettings["baseURL"] + ConfigurationManager.AppSettings["versionURL"] + "&" + ConfigurationManager.AppSettings["idCalURL"] + "&" + ConfigurationManager.AppSettings["paramURL"];
 
         public Edt()
         {
@@ -29,11 +29,20 @@ namespace TestRequest.Schedule
             }
         }
 
-        public List<Occurrence> GetEvent(DateTime _start, DateTime _end)
+        public IEnumerable<IGrouping<DateTime, CalendarEvent>> GetEvents(DateTime today)
         {
-            return _Calendar.GetOccurrences(_start, _end).ToList();
+            int diff = (7 + (today.DayOfWeek - DayOfWeek.Monday)) % 7;
+            DateTime start = today.AddDays(-1 * diff).Date;
+
+            DateTime end = start.AddDays(6);
+
+            return _Calendar.Events.Where(ev => ev.Start.Date >= start && ev.End.Date <= end).OrderBy(ev => ev.Start).GroupBy(ev => ev.Start.Date);
         }
 
+        public IEnumerable<IGrouping<DateTime, CalendarEvent>> GetEvents(DateTime _start, DateTime _end)
+        {
+            return _Calendar.Events.Where(ev => ev.Start.Date >= _start && ev.End.Date <= _end).OrderBy(ev => ev.Start).GroupBy(ev => ev.Start.Date);
+        }
 
         public void SetUrl(string url)
         {
